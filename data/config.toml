@@ -1,0 +1,10 @@
+Title = "Cloudcakes Ticket Bot"
+
+[target]
+LOGIN_URL = "https://cloudcakes.sab.id/"
+# LOGIN_URL = "data/testpage.htm"
+
+[proxy]
+ENABLE_PROXY = false
+PROXY_HOST = "http://127.0.0.1"
+PROXY_PORT = 10101
