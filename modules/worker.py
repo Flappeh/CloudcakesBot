@@ -6,11 +6,13 @@ from modules.RecaptchaSolver import RecaptchaSolver
 from time import sleep
 from modules.config import LOGIN_URL, ENABLE_PROXY
 from random import randint
+from datetime import datetime, timedelta
+import pause
 
 class ValWorker():
-    def __init__(self, name, phone, email):
+    def __init__(self, name, phone, email, agent):
         try:
-            co = ChromiumOptions().auto_port()
+            co = ChromiumOptions().auto_port().set_user_agent(agent)
             if ENABLE_PROXY:
                 prox_data = px.get_single()
                 print(f"Using : {prox_data}")
@@ -35,7 +37,11 @@ class ValWorker():
                 retry=None, 
                 interval=None,
                 timeout=30)
+            t = datetime.today()
+            start = datetime(t.year, t.month, t.day,t.hour,59,59)
+            pause.until(start)
             sleep(0.5)
+            self.driver.refresh()
         except TimeoutError:
             print("Error timeout")
             self.result = "Proxy Timeout Error"
@@ -102,8 +108,9 @@ class ValWorker():
         # self.result = self.check_result()
         # self.set_temp_result()
         print(self.name)
-        sleep(80)
+        sleep(100)
         self.driver.get_screenshot(name=f"Result-{self.name}")
+        sleep(10)
     
     def check_result(self):
         result = self.driver.html

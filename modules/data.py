@@ -5,12 +5,20 @@ from pandas.errors import EmptyDataError
 
 root_path = os.getcwd()
 
+def import_agents():
+    try:
+        agents = []
+        with open("data/user_agents.txt",'r') as f:
+            agents = f.readlines()
+        return agents
+    except Exception as e:
+        raise Exception("Unable to open or read user agents")
 
 def import_data():
     try:
         input_name = 'input.xlsx'
         file_path = root_path + f"\\data\\{input_name}"
-        df = pd.read_excel(file_path, header=0)
+        df = pd.read_excel(file_path, header=0, dtype={"phone": str})
     except EmptyDataError:
         raise Exception("Data dari file input kosong, mohon cek kembali\n")
     except FileNotFoundError as e:

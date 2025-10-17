@@ -1,4 +1,4 @@
-from modules.data import import_items, save_data, import_data
+from modules.data import import_items, save_data, import_data, import_agents
 from modules.worker import ValWorker
 from modules.config import remove_temp, ENABLE_PROXY
 from DrissionPage.common import Settings
@@ -7,6 +7,7 @@ from modules import proxy
 import time
 import os
 import sys
+import random
 
 Settings.set_language('en')
 
@@ -27,10 +28,10 @@ __     __    _ _     _       _               ____        _
     
 def init_worker(input, return_dict):
     current_worker = 0
-    idx, data= input
+    idx, data, agent= input
     if len(data) < 1:
         return
-    worker = ValWorker(data[0], data[1], data[2])
+    worker = ValWorker(data[0], data[1], data[2], agent)
     worker.start()
     return_dict[f"{current_worker}-{idx}"] = data
     del worker
@@ -84,8 +85,9 @@ if __name__ == "__main__":
     
     # global_data = import_items(count)
     global_data = import_data()
-    
+    user_agents = import_agents()
     print(global_data)
+    
     if ENABLE_PROXY:
         print("Retrieving proxy data")
         proxy_data = proxy.get_list()    
@@ -94,7 +96,7 @@ if __name__ == "__main__":
         
     
     for i in range(len(global_data)):
-        process = mp.Process(target=init_worker,args=((i, global_data[i]),return_dict))
+        process = mp.Process(target=init_worker,args=((i, global_data[i], random.choice(user_agents)),return_dict))
         procs.append(process)
         process.start()
         
