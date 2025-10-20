@@ -1,31 +1,16 @@
-from modules.data import import_items, save_data, import_data, import_agents
+from modules.data import import_data, import_agents
 from modules.worker import ValWorker
 from modules.config import remove_temp, ENABLE_PROXY
 from DrissionPage.common import Settings
 import multiprocessing as mp
 from modules import proxy
 import time
-import os
 import sys
 import random
 
 Settings.set_language('en')
 
-intro = """
-===============================================================
-__     __    _ _     _       _               ____        _   
-\\ \\   / /_ _| (_) __| | __ _| |_ ___  _ __  | __ )  ___ | |_
- \\ \\ / / _` | | |/ _` |/ _` | __/ _ \\| '__| |  _ \\ / _ \\| __|
-  \\ V / (_| | | | (_| | (_| | || (_) | |    | |_) | (_) | |_
-   \\_/ \\__,_|_|_|\\__,_|\\__,_|\\__\\___/|_|    |____/ \\___/ \\__|
-   
-===============================================================
-"""
 
-
-
-    
-    
 def init_worker(input, return_dict):
     current_worker = 0
     idx, data, agent= input
@@ -71,22 +56,16 @@ if __name__ == "__main__":
     sys.excepthook = show_exception_and_exit
     mp.freeze_support()
     remove_temp()
-    
-    print(intro)
-    
-    print("Welcome to validator bot!\n\n")
+    print("Cloudcakes bot")
     
     manager = mp.Manager()
     return_dict = manager.dict()
-    
     procs = []
     
-    # count = get_parallel_count()
-    
-    # global_data = import_items(count)
     global_data = import_data()
     user_agents = import_agents()
-    print(global_data)
+    
+    print("Starting bot with ",len(global_data)," users")
     
     if ENABLE_PROXY:
         print("Retrieving proxy data")
@@ -103,8 +82,5 @@ if __name__ == "__main__":
     for i in procs:
         i.join()
     
-    # results = return_dict.values()
-    # save_data()
-    # remove_temp()
     print("Done, Please check results.xlsx in your data folder!")
     time.sleep(10)
