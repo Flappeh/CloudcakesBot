@@ -2,7 +2,6 @@ from DrissionPage import ChromiumPage, ChromiumOptions, SessionPage
 from DrissionPage.errors import ElementNotFoundError, PageDisconnectedError
 from DrissionPage.common import Actions
 from modules import proxy as px
-from modules.RecaptchaSolver import RecaptchaSolver
 from time import sleep
 from modules.config import LOGIN_URL, ENABLE_PROXY
 from random import randint
@@ -26,7 +25,6 @@ class ValWorker():
                 print(f"Using : {prox_data}")
                 co = ChromiumOptions().auto_port().set_proxy(prox_data)
             self.driver = ChromiumPage(co)
-            self.recapthaSolver = RecaptchaSolver(self.driver)
             self.proxy = prox_data if ENABLE_PROXY else ""
             self.name = name
             self.phone = phone
@@ -48,8 +46,9 @@ class ValWorker():
             t = datetime.today()
             start = datetime(t.year, t.month, t.day,t.hour,59,59)
             pause.until(start)
-            sleep(0.5)
             self.driver.refresh()
+            sleep(0.5)
+            self.check_result()
         except TimeoutError:
             print("Error timeout")
             self.result = "Proxy Timeout Error"
@@ -60,6 +59,11 @@ class ValWorker():
             self.result = "Proxy Timeout Error"
             self.set_temp_result()
             self.driver.close()
+        
+        except PenuhError:
+            print("Sudah penuh")
+            self.driver.close()
+            
         except Exception as e:
             print(type(e))
             print("Continuing")

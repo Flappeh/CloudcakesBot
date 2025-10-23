@@ -53,34 +53,38 @@ def show_exception_and_exit(exc_type, exc_value, tb):
     sys.exit(-1)
 
 if __name__ == "__main__":
-    sys.excepthook = show_exception_and_exit
-    mp.freeze_support()
-    remove_temp()
-    print("Cloudcakes bot")
-    
-    manager = mp.Manager()
-    return_dict = manager.dict()
-    procs = []
-    
-    global_data = import_data()
-    user_agents = import_agents()
-    
-    print("Starting bot with ",len(global_data)," users")
-    
-    if ENABLE_PROXY:
-        print("Retrieving proxy data")
-        proxy_data = proxy.get_list()    
-        if not proxy_data or len(proxy_data) < 1:
-            proxy_data = proxy.new_list(5)
+    try:
+        sys.excepthook = show_exception_and_exit
+        mp.freeze_support()
+        remove_temp()
+        print("Cloudcakes bot")
         
-    
-    for i in range(len(global_data)):
-        process = mp.Process(target=init_worker,args=((i, global_data[i], random.choice(user_agents)),return_dict))
-        procs.append(process)
-        process.start()
+        manager = mp.Manager()
+        return_dict = manager.dict()
+        procs = []
         
-    for i in procs:
-        i.join()
-    
-    print("Done, Please check results.xlsx in your data folder!")
-    time.sleep(10)
+        global_data = import_data()
+        user_agents = import_agents()
+        
+        print("Starting bot with ",len(global_data)," users")
+        
+        if ENABLE_PROXY:
+            print("Retrieving proxy data")
+            proxy_data = proxy.get_list()    
+            if not proxy_data or len(proxy_data) < 1:
+                proxy_data = proxy.new_list(5)
+            
+        
+        for i in range(len(global_data)):
+            process = mp.Process(target=init_worker,args=((i, global_data[i], random.choice(user_agents)),return_dict))
+            procs.append(process)
+            process.start()
+            
+        for i in procs:
+            i.join()
+        
+        print("Done, Please check results.xlsx in your data folder!")
+        time.sleep(10)
+    except Exception as e:
+        print(f"Error occured, {e}")
+        time.sleep(10)
