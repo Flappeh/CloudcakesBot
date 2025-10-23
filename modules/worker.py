@@ -48,6 +48,7 @@ class ValWorker():
             t = datetime.today()
             start = datetime(t.year, t.month, t.day,t.hour,59,59)
             pause.until(start)
+            sleep(0.5)
             self.driver.refresh()
         except TimeoutError:
             print("Error timeout")
@@ -67,14 +68,22 @@ class ValWorker():
             tries = 0
             result = False
             while tries < 10 and result == False:
-                result = self.check_result()
-                self.insert_creds()
                 self.driver.refresh()
+                sleep(0.3)
+                self.insert_creds()
+                result = self.check_result()
                 tries += 1
                 
             if tries == 3 and result == False:
                 self.result = "Proxy Timeout Error"
                 self.driver.close()
+            
+            sleep(1)
+            result = self.check_hasil()
+            while result == False:
+                self.driver.ele("text:Cek").click()
+                result = self.check_hasil()
+                sleep(randint(1,5))
                 
         except PenuhError:
             print("Sudah penuh")
@@ -83,10 +92,17 @@ class ValWorker():
             print("Sudah penuh")
             self.driver.close()
             
-        sleep(100)
+        sleep(10)
         self.driver.get_screenshot(name=f"Result-{self.name}")
         sleep(10)
+        self.driver.close()
     
+    def check_hasil(self):
+        data = self.driver.html
+        if "Sedang Diproses" in data:
+            return False
+        else:
+            return True
     def check_result(self):
         result = self.driver.html
         if "coba lagi" in result:

@@ -4,3 +4,5 @@ build
 dist
 clicker
 *_pycache_*
+Result-*
+main.spec
