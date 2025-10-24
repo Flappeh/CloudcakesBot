@@ -113,7 +113,7 @@ class ValWorker():
             return True
     def check_result(self):
         result = self.driver.html
-        if "coba lagi" in result:
+        if "Besuk" in result:
             return False
         if "coba lagi" in result:
             return False

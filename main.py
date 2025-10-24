@@ -1,8 +1,9 @@
 from modules.data import import_data, import_agents
 from modules.worker import ValWorker
-from modules.config import remove_temp, ENABLE_PROXY
+from modules.config import remove_temp, ENABLE_PROXY, LICENSE_URL
 from DrissionPage.common import Settings
 import multiprocessing as mp
+import requests
 from modules import proxy
 import time
 import sys
@@ -52,12 +53,28 @@ def show_exception_and_exit(exc_type, exc_value, tb):
     input("Press any key to exit.")
     sys.exit(-1)
 
+def check_license():
+    try:
+        req = requests.get(LICENSE_URL)
+        data = req.json()
+        if data["active"] == True:
+            print("License is active")
+            return
+        print("License is inactive, please contact admin")
+        time.sleep(10)
+        sys.exit()
+    except Exception:
+        print("License check error, please contact admin")
+        time.sleep(10)
+        sys.exit()
+
 if __name__ == "__main__":
     try:
         sys.excepthook = show_exception_and_exit
         mp.freeze_support()
         remove_temp()
         print("Cloudcakes bot")
+        check_license()
         
         manager = mp.Manager()
         return_dict = manager.dict()

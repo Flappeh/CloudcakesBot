@@ -12,7 +12,12 @@ ENABLE_PROXY = config_data["proxy"]["ENABLE_PROXY"]
 PROXY_HOST = config_data["proxy"]["PROXY_HOST"]
 PROXY_PORT = config_data["proxy"]["PROXY_PORT"]
 
+LICENSE_HOST = config_data["license"]["LICENSE_HOST"]
+LICENSE_KEY = config_data["license"]["LICENSE_KEY"]
+
 PROXY_URL = f"{PROXY_HOST}:{PROXY_PORT}/api"
+LICENSE_URL = f"{LICENSE_HOST}/{LICENSE_KEY}"
+
 
 def remove_temp():
     try:

@@ -8,3 +8,7 @@ LOGIN_URL = "https://cloudcakes.sab.id/"
 ENABLE_PROXY = false
 PROXY_HOST = "http://127.0.0.1"
 PROXY_PORT = 10101
+
+[license]
+LICENSE_HOST = "https://license.flappeh.my.id/check"
+LICENSE_KEY = "9b0f4d720720fd55436ac7f07ac8a840"
