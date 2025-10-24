@@ -75,6 +75,7 @@ class ValWorker():
                 self.driver.refresh()
                 sleep(0.3)
                 self.insert_creds()
+                sleep(0.2)
                 result = self.check_result()
                 tries += 1
                 
@@ -84,9 +85,13 @@ class ValWorker():
             
             sleep(1)
             result = self.check_hasil()
+            start_time = datetime.now()
             while result == False:
                 self.driver.ele("text:Cek").click()
                 result = self.check_hasil()
+                elapsed = datetime.now() - start_time
+                if elapsed >= timedelta(seconds=60):
+                    result = True
                 sleep(randint(1,5))
                 
         except PenuhError:
@@ -96,7 +101,6 @@ class ValWorker():
             print("Sudah penuh")
             self.driver.close()
             
-        sleep(10)
         self.driver.get_screenshot(name=f"Result-{self.name}")
         sleep(10)
         self.driver.close()
@@ -109,6 +113,8 @@ class ValWorker():
             return True
     def check_result(self):
         result = self.driver.html
+        if "coba lagi" in result:
+            return False
         if "coba lagi" in result:
             return False
         if "saat ini" in result:
