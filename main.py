@@ -74,10 +74,11 @@ def check_time():
         now = datetime.datetime.now()
         target = datetime.datetime(now.year, now.month, now.day, 9, 55)
         if now > target:
-            return
+            target = datetime.datetime(now.year, now.month, now.day, 9, 55) + datetime.timedelta(days=1)
+            
         delta = target - now
         if delta > datetime.timedelta(0):
-            print("Waiting until 09:55 to start bot")
+            print(f"Waiting until next 09:55 to start bot")
             time.sleep(delta.total_seconds())
         return
     except Exception as e:

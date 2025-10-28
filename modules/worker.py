@@ -60,7 +60,6 @@ class ValWorker():
             print("Sudah penuh")
             self.driver.close()
         except Exception as e:
-            print(type(e))
             print("Continuing")
             
         try:
@@ -115,8 +114,8 @@ class ValWorker():
             if delta > timedelta(0):
                 sleep(delta.total_seconds())
             return
-        except Exception as e:
-            print(f"Error occured, {e}")
+        except Exception:
+            print("Error occured")
             
     def check_hasil(self):
         data = self.driver.html
@@ -142,25 +141,25 @@ class ValWorker():
             # Wait until element exists and is visible
             ele = self.driver.wait.ele_displayed('#name', timeout=5)
             ele.input(self.name)
-        except Exception as e:
-            print(f"Error entering name: {e}")
+        except Exception:
+            print("Tried entering name")
 
         try:
             ele = self.driver.wait.ele_displayed('#email', timeout=5)
             ele.input(self.email)
-        except Exception as e:
-            print(f"Error entering email: {e}")
+        except Exception:
+            print("Tried entering email")
 
         try:
             ele = self.driver.wait.ele_displayed('#phone', timeout=5)
             ele.input(self.phone)
-        except Exception as e:
-            print(f"Error entering phone: {e}")
+        except Exception:
+            print("Tried entering phone")
 
         try:
             btn = self.driver.wait.ele_displayed('text:Dapatkan', timeout=5)
             btn.click()
         except:
-            print("Tried entering Clicking")
+            print("Tried Clicking")
         
         
