@@ -1,12 +1,11 @@
-from DrissionPage import ChromiumPage, ChromiumOptions, SessionPage
-from DrissionPage.errors import ElementNotFoundError, PageDisconnectedError
+from DrissionPage import ChromiumPage, ChromiumOptions
+from DrissionPage.errors import PageDisconnectedError
 from DrissionPage.common import wait_until
 from modules import proxy as px
 from time import sleep
 from modules.config import LOGIN_URL, ENABLE_PROXY
 from random import randint
 from datetime import datetime, timedelta
-import pause
 
 class PenuhError(Exception):
     def __init__(self, message, errors):            
