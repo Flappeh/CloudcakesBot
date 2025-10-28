@@ -8,6 +8,7 @@ from modules import proxy
 import time
 import sys
 import random
+import datetime
 
 Settings.set_language('en')
 
@@ -68,6 +69,20 @@ def check_license():
         time.sleep(10)
         sys.exit()
 
+def check_time():
+    try:
+        now = datetime.datetime.now()
+        target = datetime.datetime(now.year, now.month, now.day, 9, 55)
+        if now > target:
+            return
+        delta = target - now
+        if delta > datetime.timedelta(0):
+            print("Waiting until 09:55 to start bot")
+            time.sleep(delta.total_seconds())
+        return
+    except Exception as e:
+        print(f"Error occured, {e}")
+
 if __name__ == "__main__":
     try:
         sys.excepthook = show_exception_and_exit
@@ -75,7 +90,7 @@ if __name__ == "__main__":
         remove_temp()
         print("Cloudcakes bot")
         check_license()
-        
+        check_time()
         manager = mp.Manager()
         return_dict = manager.dict()
         procs = []

@@ -100,7 +100,11 @@ class ValWorker():
         except Exception as e:
             print("Sudah penuh")
             self.driver.close()
-            
+        
+        if "Dapatkan" in self.driver.html:
+            self.driver.close()
+            return
+        
         self.driver.get_screenshot(name=f"Result-{self.name}")
         sleep(10)
         self.driver.close()
@@ -125,14 +129,25 @@ class ValWorker():
             return True
             
     def insert_creds(self) -> bool:
-        try:
-            self.driver.ele('#name').input(self.name)
-            self.driver.ele('#phone').input(self.phone)
-            self.driver.ele('#email').input(self.email)
-            self.driver.ele("text:Dapatkan").click()
-            return True
-        except:
-            print("Error entering credentials")
-            return False
+        count = 0
+        while count < 3:
+            try:
+                self.driver.ele('#name').input(self.name)
+            except:
+                print("Tried entering name")
+            try:
+                self.driver.ele('#email').input(self.email)
+            except:
+                print("Tried entering email")
+            try:
+                self.driver.ele('#phone').input(self.phone)
+            except:
+                print("Tried entering phone")
+            try:
+                self.driver.ele("text:Dapatkan").click()
+            except:
+                print("Tried entering Clicking")
+            
+            count +=1
         
         
