@@ -1,6 +1,6 @@
 from DrissionPage import ChromiumPage, ChromiumOptions, SessionPage
 from DrissionPage.errors import ElementNotFoundError, PageDisconnectedError
-from DrissionPage.common import Actions
+from DrissionPage.common import wait_until
 from modules import proxy as px
 from time import sleep
 from modules.config import LOGIN_URL, ENABLE_PROXY
@@ -43,9 +43,7 @@ class ValWorker():
                 retry=None, 
                 interval=None,
                 timeout=30)
-            t = datetime.today()
-            start = datetime(t.year, t.month, t.day,t.hour,59,59)
-            pause.until(start)
+            self.check_time()
             self.driver.refresh()
             sleep(0.5)
             self.check_result()
@@ -58,12 +56,10 @@ class ValWorker():
             print("Error connection from proxy")
             self.result = "Proxy Timeout Error"
             self.set_temp_result()
-            self.driver.close()
-        
+            self.driver.close()        
         except PenuhError:
             print("Sudah penuh")
             self.driver.close()
-            
         except Exception as e:
             print(type(e))
             print("Continuing")
@@ -105,10 +101,24 @@ class ValWorker():
             self.driver.close()
             return
         
+        sleep(10)
         self.driver.get_screenshot(name=f"Result-{self.name}")
         sleep(10)
         self.driver.close()
     
+    def check_time(self):
+        try:
+            now = datetime.now()
+            target = datetime(now.year, now.month, now.day, 9, 59, 59)
+            if now > target:
+                return
+            delta = target - now
+            if delta > timedelta(0):
+                sleep(delta.total_seconds())
+            return
+        except Exception as e:
+            print(f"Error occured, {e}")
+            
     def check_hasil(self):
         data = self.driver.html
         if "Sedang Diproses" in data:
@@ -128,26 +138,30 @@ class ValWorker():
         else:
             return True
             
-    def insert_creds(self) -> bool:
-        count = 0
-        while count < 3:
-            try:
-                self.driver.ele('#name').input(self.name)
-            except:
-                print("Tried entering name")
-            try:
-                self.driver.ele('#email').input(self.email)
-            except:
-                print("Tried entering email")
-            try:
-                self.driver.ele('#phone').input(self.phone)
-            except:
-                print("Tried entering phone")
-            try:
-                self.driver.ele("text:Dapatkan").click()
-            except:
-                print("Tried entering Clicking")
-            
-            count +=1
+    def insert_creds(self):
+        try:
+            # Wait until element exists and is visible
+            ele = self.driver.wait.ele_displayed('#name', timeout=5)
+            ele.input(self.name)
+        except Exception as e:
+            print(f"Error entering name: {e}")
+
+        try:
+            ele = self.driver.wait.ele_displayed('#email', timeout=5)
+            ele.input(self.email)
+        except Exception as e:
+            print(f"Error entering email: {e}")
+
+        try:
+            ele = self.driver.wait.ele_displayed('#phone', timeout=5)
+            ele.input(self.phone)
+        except Exception as e:
+            print(f"Error entering phone: {e}")
+
+        try:
+            btn = self.driver.wait.ele_displayed('text:Dapatkan', timeout=5)
+            btn.click()
+        except:
+            print("Tried entering Clicking")
         
         
