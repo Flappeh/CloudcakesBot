@@ -67,9 +67,7 @@ class ValWorker():
             result = False
             while tries < 10 and result == False:
                 self.driver.refresh()
-                sleep(0.3)
                 self.insert_creds()
-                sleep(0.2)
                 result = self.check_result()
                 tries += 1
                 
@@ -87,7 +85,7 @@ class ValWorker():
                 if elapsed >= timedelta(seconds=60):
                     result = True
                 sleep(randint(1,5))
-                
+            
         except PenuhError:
             print("Sudah penuh")
             self.driver.close()
@@ -99,7 +97,7 @@ class ValWorker():
             self.driver.close()
             return
         
-        sleep(10)
+        sleep(100)
         self.driver.get_screenshot(name=f"Result-{self.name}")
         sleep(10)
         self.driver.close()
@@ -119,13 +117,13 @@ class ValWorker():
             
     def check_hasil(self):
         data = self.driver.html
-        if "Sedang Diproses" in data:
+        if "Jangan tutup" in data:
             return False
         else:
             return True
     def check_result(self):
         result = self.driver.html
-        if "Besuk" in result:
+        if "besuk" in result:
             return False
         if "coba lagi" in result:
             return False
